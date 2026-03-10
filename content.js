@@ -25,6 +25,12 @@
     ],
     postedDate: [
       '[class*="jobTupleFooter"] [class*="plcHolder"] span',
+      '.job-post-day',
+      '.created-date-container',
+    ],
+    companyName: [
+        '.comp-name',
+        '[class*="companyWrapper"] span[title]',
     ]
   };
 
@@ -65,7 +71,7 @@
     const low = text.toLowerCase();
     if (low.includes('today') || low.includes('just now') || low.includes('hour')) return 0;
     if (low.includes('yesterday')) return 1;
-    const m = low.match(/(\d+)\s*(day|week|month)/);
+    const m = low.match(/(\d+)\+?\s*(day|week|month)/);
     if (!m) return 0;
     const n = parseInt(m[1]);
     if (m[2] === 'week') return n * 7;
@@ -76,12 +82,9 @@
   function shouldHide(card) {
     if (!filters || !filters.active) return false;
 
-    const titleText = getText(card, SELECTORS.title);
-    const companyText = getText(card, SELECTORS.company);
-    const salaryText = getText(card, SELECTORS.salary);
     const expText = getText(card, SELECTORS.experience);
-    const locationText = getText(card, SELECTORS.location);
     const dateText = getText(card, SELECTORS.postedDate);
+    const companyText = getText(card, SELECTORS.companyName);
     const fullText = (card.textContent || '').toLowerCase();
 
     // Experience filter
@@ -100,6 +103,13 @@
       if (days > parseInt(filters.postedWithin)) return true;
     }
 
+    // exclude company filter
+    if (filters.blacklist) {
+      for (const companyName of filters.blacklist) {
+        if (companyName.toLowerCase() == companyText.toLowerCase()) return true;
+      }
+    }
+
     return false;
   }
 
@@ -114,6 +124,19 @@
     }
 
     if (cards.length === 0) return;
+
+    // Get all filter labels
+    // document.querySelectorAll('label[class*="styles_chkLbl"]').forEach(label => {
+    //   const titleSpan = label.querySelector('span[title]');
+    //   if (!titleSpan) return;
+    //   const text = titleSpan.getAttribute('title').toLowerCase();
+    //   if (!text.toLowerCase().includes('lakhs')) return; 
+    //   console.log('salary', text);
+    //   if (text.includes('6-10') || text.includes('10-15')) {
+    //     const checkbox = label.querySelector('i[class*="unchecked"]');
+    //     if (checkbox) label.click(); // clicking the label toggles the checkbox
+    //   }
+    // });
 
     // console.log('apply filters');
     // console.log(filters);
@@ -179,13 +202,14 @@
   // Listen for filter updates from popup
   window.addEventListener('naukriFiltersUpdated', loadAndApply);
 
+
   // Listen for apply button
-  document.addEventListener("click", function (e) {
-    const btn = e.target.closest("button");
-    if (btn && btn.innerText.includes("Apply")) {
-      console.log("Apply clicked");
-    }
-  });
+  // document.addEventListener("click", function (e) {
+  //   const btn = e.target.closest("button");
+  //   if (btn && btn.innerText.includes("Apply")) {
+  //     console.log("Apply clicked");
+  //   }
+  // });
 
   // Init
   loadAndApply();

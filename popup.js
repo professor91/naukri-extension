@@ -1,7 +1,9 @@
 const DEFAULT_FILTERS = {
   active: true,
   totalExp: '',
+  // expSalary: '',
   postedWithin: '',
+  blacklist: [],
 };
 
 let filters = { ...DEFAULT_FILTERS };
@@ -16,12 +18,50 @@ document.querySelectorAll('.tab').forEach(tab => {
   });
 });
 
+// Tag helpers
+function renderTags(containerId, items, key) {
+  const c = document.getElementById(containerId);
+  c.innerHTML = '';
+  items.forEach((item, i) => {
+    const tag = document.createElement('span');
+    tag.className = 'tag';
+    tag.innerHTML = `${item}<span class="remove" data-key="${key}" data-i="${i}">×</span>`;
+    c.appendChild(tag);
+  });
+  c.querySelectorAll('.remove').forEach(btn => {
+    btn.addEventListener('click', () => {
+      filters[btn.dataset.key].splice(parseInt(btn.dataset.i), 1);
+      renderTags(containerId, filters[btn.dataset.key], key);
+    });
+  });
+}
+
+function setupTagInput(inputId, btnId, key, containerId) {
+  const input = document.getElementById(inputId);
+  const btn = document.getElementById(btnId);
+  const add = () => {
+    const val = input.value.trim();
+    if (val && !filters[key].includes(val)) {
+      filters[key].push(val);
+      renderTags(containerId, filters[key], key);
+    }
+    input.value = '';
+  };
+  btn.addEventListener('click', add);
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') add(); });
+}
+
+setupTagInput('blacklistInput', 'addBlacklist', 'blacklist', 'blacklistTags');
 
 // Load saved filters
 chrome.storage.sync.get('naukriFilters', (data) => {
   if (data.naukriFilters) {
     filters = { ...DEFAULT_FILTERS, ...data.naukriFilters };
   }
+
+  // Fix corrupted fields from old versions
+  if (!Array.isArray(filters.blacklist)) filters.blacklist = [];
+
   populateUI();
   loadStats();
 });
@@ -29,7 +69,9 @@ chrome.storage.sync.get('naukriFilters', (data) => {
 function populateUI() {
   document.getElementById('masterToggle').checked = filters.active;
   document.getElementById('totalExp').value = filters.totalExp;
+  // document.getElementById('expSalary').value = filters.expSalary;
   document.getElementById('postedWithin').value = filters.postedWithin;
+  renderTags('blacklistTags', filters.blacklist, 'blacklist');
 }
 
 function loadStats() {
@@ -47,6 +89,7 @@ function loadStats() {
 document.getElementById('saveBtn').addEventListener('click', () => {
   filters.active = document.getElementById('masterToggle').checked;
   filters.totalExp = document.getElementById('totalExp').value;
+  // filters.expSalary = document.getElementById('expSalary').value;
   filters.postedWithin = document.getElementById('postedWithin').value;
 
   chrome.storage.sync.set({ naukriFilters: filters }, () => {

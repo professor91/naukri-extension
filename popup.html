@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Naukri Smart Filters</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #0d0f14;
@@ -44,10 +44,10 @@
       display: flex; align-items: center; justify-content: center;
       font-size: 17px; font-weight: 800;
       color: #fff;
-      font-family: 'Syne', sans-serif;
+      font-family: 'IBM Plex Sans', sans-serif;
     }
     header h1 {
-      font-family: 'Syne', sans-serif;
+      font-family: 'IBM Plex Sans', sans-serif;
       font-size: 15px; font-weight: 800;
       letter-spacing: -0.3px;
     }
@@ -58,7 +58,7 @@
       background: var(--surface2);
       border-bottom: 1px solid var(--border);
     }
-    .toggle-label { font-size: 12px; color: var(--muted); font-family: 'Syne', sans-serif; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+    .toggle-label { font-size: 12px; color: var(--muted); font-family: 'DM Sans', sans-serif; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
     .toggle {
       position: relative; width: 40px; height: 22px;
     }
@@ -84,7 +84,8 @@
     .tab {
       flex: 1; padding: 10px 6px;
       text-align: center; font-size: 11px;
-      font-family: 'Syne', sans-serif; font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
       color: var(--muted); cursor: pointer;
       border-bottom: 2px solid transparent;
       transition: all .2s; letter-spacing: 0.3px;
@@ -97,7 +98,7 @@
     .panel.active { display: block; }
 
     .field-group { margin-bottom: 14px; }
-    label { display: block; font-size: 11px; font-family: 'Syne', sans-serif; font-weight: 600; color: var(--muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+    label { display: block; font-size: 11px; font-family: 'DM Sans', sans-serif; font-weight: 600; color: var(--muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
     input[type="text"], input[type="number"], textarea, select {
       width: 100%; padding: 8px 10px;
       background: var(--surface2); border: 1px solid var(--border);
@@ -129,7 +130,7 @@
       padding: 7px 12px; border-radius: var(--radius);
       background: var(--accent); color: #fff;
       border: none; cursor: pointer; font-size: 12px;
-      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-family: 'DM Sans', sans-serif; font-weight: 700;
       white-space: nowrap; transition: opacity .2s;
     }
     .btn-sm:hover { opacity: .85; }
@@ -140,7 +141,7 @@
       padding: 11px; border-radius: var(--radius);
       background: linear-gradient(135deg, var(--accent), var(--accent2));
       color: #fff; border: none; cursor: pointer;
-      font-size: 13px; font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 13px; font-family: 'DM Sans', sans-serif; font-weight: 700;
       letter-spacing: 0.5px; text-transform: uppercase;
       transition: opacity .2s, transform .1s;
     }
@@ -156,7 +157,7 @@
       border-radius: var(--radius); padding: 12px;
       text-align: center;
     }
-    .stat-card .num { font-size: 22px; font-family: 'Syne', sans-serif; font-weight: 800; }
+    .stat-card .num { font-size: 22px; font-family: 'DM Sans', sans-serif; font-weight: 800; }
     .stat-card .lbl { font-size: 10px; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
     .num.green { color: var(--green); }
     .num.red { color: var(--red); }
@@ -171,7 +172,7 @@
     .toast {
       position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%);
       background: var(--green); color: #fff; padding: 8px 18px;
-      border-radius: 20px; font-size: 12px; font-family: 'Syne', sans-serif;
+      border-radius: 20px; font-size: 12px; font-family: 'DM Sans', sans-serif;
       font-weight: 700; letter-spacing: 0.5px;
       opacity: 0; transition: opacity .3s; pointer-events: none;
     }
@@ -192,6 +193,7 @@
 <body>
   <header>
     <div>
+      <!-- <span class='logo'>N</span> -->
       <h1>Naukri Smart Filters</h1>
       <span>Custom job filtering engine</span>
     </div>
@@ -226,6 +228,18 @@
     <div class="field-group">
       <label>Total Experience (Years)</label>
       <input type="number" id="totalExp" placeholder="Total Exp (in years)" min="0" max="50" />
+    </div>
+    <!-- <div class="field-group"> -->
+    <!--   <label>Expected Salary (LPA)</label> -->
+    <!--   <input type="number" id="expSalary" placeholder="Expected Salary (in LPA)" min="0" max="200" /> -->
+    <!-- </div> -->
+    <div class="field-group">
+      <label>Blacklisted Companies (hide their jobs)</label>
+      <div class="tag-input-row">
+        <input type="text" id="blacklistInput" placeholder="Company name..." />
+        <button class="btn-sm" id="addBlacklist">Add</button>
+      </div>
+      <div class="tag-list" id="blacklistTags"></div>
     </div>
   </div>
 
